@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy 2 elements to &apos;WebDriverUniversityFramework/src/test/java/WebDriverUniversityFramework.resources&apos;&#x0A;- Original project: &apos;CucumberFramework&apos;&#x0A;- Destination element: &apos;WebDriverUniversityFramework/src/test/java/WebDriverUniversityFramework.resources&apos;&#x0A;- Original elements:&#x0A;     geckodriver&#x0A;     chromedriver" description="Copy files" destination="=WebDriverUniversityFramework/src\/test\/java&lt;WebDriverUniversityFramework.resources" element1="src/test/java/CucumberFramework/resources/geckodriver" element2="src/test/java/CucumberFramework/resources/chromedriver" files="2" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1556694012706" units="0" version="1.0"/>
+</session>

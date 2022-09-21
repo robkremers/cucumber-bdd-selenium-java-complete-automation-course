@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;testng.xml&apos; to &apos;WebDriverUniversityFrameworkSubPages&apos;&#x0A;- Original project: &apos;WebDriverUniversityFramework&apos;&#x0A;- Destination element: &apos;WebDriverUniversityFrameworkSubPages&apos;&#x0A;- Original element: &apos;testng.xml&apos;" description="Copy file" destination="=WebDriverUniversityFrameworkSubPages" element1="testng.xml" files="1" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1560163547713" units="0" version="1.0"/>
+</session>

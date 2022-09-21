@@ -1,0 +1,1630 @@
+Topic: Study of Selenium / Cucumber.
+Date : 2019-03-25.
+
+Sources:
+- https://www.udemy.com/cucumber-bdd-selenium-java-complete-automation-course/learn/v4/content
+- Book: The Cucumber for Java Book
+
+Tips from Sander:
+
+Test tools:
+- https://chrome.google.com/webstore/detail/chropath/ljngjbnaijcbncmcnjfhigebomdlkcjo?hl=en
+- https://chrome.google.com/webstore/detail/css-selector-helper-for-c/gddgceinofapfodcekopkjjelkbjodin/related?hl=en
+
+- headless chrome om de scenario's te draaien.
+- 
+
+---------------------------------------------------------------------------------------------------
+2019-03-28:
+
+Ch. 5. A Note for Mac users.
+
+PLEASE COPY THESE STEPS TO A NOTEPAD AND USE THESE STEPS WHEN WORKING THROUGH LECTURE 6 AND LECTURE 7.
+
+Step 1 -
+
+	On a Mac machine you will need to perform the following:
+
+	Create a bash profile (File) under your user directory:
+
+	A typical install of OS X won't create a .bash_profile for you. When you want to run functions from your command line, this is a must-have.
+
+	Start up Terminal
+
+	Type "cd ~/" to go to your home folder
+
+	Type "touch .bash_profile" to create your new file.
+
+	Edit .bash_profile with your favorite editor (or you can just type "open -e .bash_profile" to open it in TextEdit.
+
+	Type ". .bash_profile" to reload .bash_profile and update any functions you add.
+
+	File will be called: .bash_profile
+
+
+
+Step 2 -
+
+	Now add the following to the file (You will need to alter the locations for Apache Maven and Java JDK in accordance to your machine):
+
+	export M2_HOME=/usr/local/apache-maven-3.5.3
+
+	export M2=$M2_HOME/bin
+
+	export PATH=$PATH:$M2
+
+	export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home
+
+	source ~/.git-bash-for-mac.sh
+
+Note:
+- In my case:
+	$ mvn --version
+	Apache Maven 3.3.9 (bb52d8502b132ec0a5a3f4c09453c07478323dc5; 2015-11-10T17:41:47+01:00)
+	Maven home: /opt/apache_maven
+
+export M2_HOME=/opt/apache_maven
+export M2=${M2_HOME}/bin
+$JAVA_HOME
+/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home 
+
+Step 3 -
+
+	export NVM_DIR="$HOME/.nvm"
+
+	[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+	[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+
+Step 4 -
+
+	Now if you open the Bash console and perform:
+
+	Java -version
+
+	mvn -v
+
+	You should see the relevant applications installed.
+
+
+---------------------------------------------------------------------------------------------------
+2019-03-28:
+
+Ch. 6. Java JDK Setup.
+
+Ch. 8. Eclipse IDE Setup.
+- Just to see if there is anything special. Later I'll switch to Intellij.
+
+Error when creating project CucumberFramework:
+- maven-compiler-plugin:3.1:compile (1 errors)
+- maven-compiler-plugin:3.1:testCompile (1 errors)
+
+Description	Resource	Path	Location	Type
+Plugin execution not covered by lifecycle configuration: org.apache.maven.plugins:maven-compiler-plugin:3.1:compile (execution: default-compile, phase: compile)	pom.xml	/CucumberFramework	line 8	Maven Project Build Lifecycle Mapping Problem
+Description	Resource	Path	Location	Type
+Plugin execution not covered by lifecycle configuration: org.apache.maven.plugins:maven-compiler-plugin:3.1:testCompile (execution: default-testCompile, phase: test-compile)	pom.xml	/CucumberFramework	line 8	Maven Project Build Lifecycle Mapping Problem
+
+Fixed as follows:
+
+Properties:
+		<maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
+
+Plugin:
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.8.0</version>
+					<configuration>
+					  <source>${maven.compiler.source}</source>
+					  <target>${maven.compiler.target}</target>
+					  <fork>true</fork> <!-- runs the compile process in the background -->
+					  <executable>${env.JAVA_HOME}/bin/javac</executable> <!-- specified if fork == true -->
+					</configuration>
+				</plugin>
+
+After this:
+- project CucumberFramework
+	- Maven | Update Project.
+
+Note:
+- I'll probably have to do the following:
+	- Install the latest Eclipse IDE
+	- Install useful plugins Like Spring Boot Suite, etc.
+
+
+The chapter continues with setting up the project / Eclipse for future use.
+--> Preferences cmd + ','
+	- Maven: point to the installed version of maven.
+	- Java : point to the installed version of java jdk.
+		- Default VM arguments:
+			-Dmaven.multiModuleProjectDirectory=M2_HOME
+
+- Go to the project:
+	- Properties:
+		- Java Build Path:
+			- Ensure that the correct library is selected: JavaSE-1.8 as JRE
+				--> This will get rid of build problems (solved earlier see above with plugins and Maven | Update Project)
+			- M2 repository:
+				- Add variable:
+					- Select M2_REPO.
+						- If not visible add it.
+							M2_REPO=/users/rkremers/.m2/repository
+	- Add the plugin maven-compiler-plugin as done earlier.
+	- Project properties: maven | Update project
+		--> the error visible before the project name will now disappear.
+
+
+---------------------------------------------------------------------------------------------------
+2019-04-01:
+
+Ch. 11. TestNG Addon for Eclipse.
+
+TestNG is a test framework like JUnit.
+Some of it's feature will be used in the course.
+
+Eclipse Help | Eclipse Marketplace:
+	--> Search TestNG.
+	- Install.
+	* So this is an Eclipse plugin, not a project plugin.
+- After Installation & restart:
+	File | New | Other: TestNG is available.
+		- We will use some of the annotations (are also available in JUnit: why not use JUnit 4.12???)
+
+
+- Same for Cucumber:
+	Eclipse Help | Eclipse Marketplace:
+	--> Search Cucumber
+	- Install Natural 0.7.6.
+		(JBehave Editor is not indicated)
+	--> Search Cucumber Eclipse Plugin.
+	- Install.
+	--> Search Eclipse Color Theme 1.0.0.
+	- Install.
+	--> Search Darkest Theme
+	- Install.
+	- De-installed: currently not interested in special themes.
+
+Check TestNG versus JUnit 4.12.
+- https://www.mkyong.com/unittest/junit-4-vs-testng-comparison/
+
+Also:
+- https://www.vogella.com/tutorials/JUnit/article.html
+
+
+---------------------------------------------------------------------------------------------------
+2019-04-01:
+
+Ch. 15. Chrome Driver and Chrome Browser.
+
+Download ChromeDriver.
+
+
+WebDriver is an open source tool for automated testing of webapps across many browsers. 
+It provides capabilities for navigating to web pages, user input, JavaScript execution, and more.  
+ChromeDriver is a standalone server which implements WebDriver's wire protocol for Chromium. 
+We are in the process of implementing and moving to the W3C standard. 
+ChromeDriver is available for Chrome on Android and Chrome on Desktop (Mac, Linux, Windows and ChromeOS).
+
+Current version of Chrome: 
+Google Chrome is up-to-date
+Versie 73.0.3683.86 (Officiële build) (64-bits)
+
+$ brew cask install chromedriver
+
+$ chromedriver --version
+ChromeDriver 73.0.3683.68 (47787ec04b6e38e22703e856e101e840b65afe72)
+
+$ chromedriver --help
+Usage: chromedriver [OPTIONS]
+
+Options
+  --port=PORT                     port to listen on
+  --adb-port=PORT                 adb server port
+  --log-path=FILE                 write server log to file instead of stderr, increases log level to INFO
+  --log-level=LEVEL               set log level: ALL, DEBUG, INFO, WARNING, SEVERE, OFF
+  --verbose                       log verbosely (equivalent to --log-level=ALL)
+  --silent                        log nothing (equivalent to --log-level=OFF)
+  --append-log                    append log file instead of rewriting
+  --replayable                    (experimental) log verbosely and don't truncate long strings so that the log can be replayed.
+  --version                       print the version number and exit
+  --url-base                      base URL path prefix for commands, e.g. wd/url
+  --whitelisted-ips               comma-separated whitelist of remote IP addresses which are allowed to connect to ChromeDriver
+  --minimum-chrome-version        minimum supported Chrome version
+
+
+Practice Test1: Setup Module
+
+---------------------------------------------------------------------------------------------------
+2019-04-01:
+
+Ch. 18. What is a POM file?
+
+
+Add to the pom.xml:
+
+	<dependency>
+	    <groupId>org.seleniumhq.selenium</groupId>
+	    <artifactId>selenium-java</artifactId>
+	    <version>3.141.59</version>
+	</dependency>
+
+In order to make this work on this BKWI laptop: Open Tunnelblick.
+Afterwards: project: maven | update project.
+
+The jar files
+
+The files will be present in $HOME/.m2.
+
+
+The cucumber dependencies in the course are out of date.
+
+Here are the current ones:
+
+	<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-jvm -->
+	<dependency>
+	    <groupId>io.cucumber</groupId>
+	    <artifactId>cucumber-jvm</artifactId>
+	    <version>4.2.6</version>
+	    <type>pom</type>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-junit -->
+	<dependency>
+	    <groupId>io.cucumber</groupId>
+	    <artifactId>cucumber-junit</artifactId>
+	    <version>4.2.6</version>
+	    <scope>test</scope>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-core -->
+	<dependency>
+	    <groupId>io.cucumber</groupId>
+	    <artifactId>cucumber-core</artifactId>
+	    <version>4.2.6</version>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-html -->
+	<dependency>
+	    <groupId>io.cucumber</groupId>
+	    <artifactId>cucumber-html</artifactId>
+	    <version>0.2.7</version>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-java -->
+	<dependency>
+	    <groupId>io.cucumber</groupId>
+	    <artifactId>cucumber-java</artifactId>
+	    <version>4.2.6</version>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-jvm-deps -->
+	<dependency>
+	    <groupId>io.cucumber</groupId>
+	    <artifactId>cucumber-jvm-deps</artifactId>
+	    <version>1.0.6</version>
+	    <scope>provided</scope>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/io.cucumber/gherkin -->
+	<dependency>
+	    <groupId>io.cucumber</groupId>
+	    <artifactId>gherkin</artifactId>
+	    <version>6.0.17</version>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest-all -->
+	<dependency>
+	    <groupId>org.hamcrest</groupId>
+	    <artifactId>hamcrest-all</artifactId>
+	    <version>1.3</version>
+	    <scope>test</scope>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-picocontainer -->
+	<dependency>
+	    <groupId>io.cucumber</groupId>
+	    <artifactId>cucumber-picocontainer</artifactId>
+	    <version>4.2.6</version>
+	    <scope>test</scope>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-testng -->
+	<dependency>
+	    <groupId>io.cucumber</groupId>
+	    <artifactId>cucumber-testng</artifactId>
+	    <version>4.2.6</version>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/com.aventstack/extentreports -->
+	<dependency>
+	    <groupId>com.aventstack</groupId>
+	    <artifactId>extentreports</artifactId>
+	    <version>4.0.9</version>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
+	<dependency>
+	    <groupId>org.freemarker</groupId>
+	    <artifactId>freemarker</artifactId>
+	    <version>2.3.28</version>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/net.masterthought/maven-cucumber-reporting -->
+	<dependency>
+	    <groupId>net.masterthought</groupId>
+	    <artifactId>maven-cucumber-reporting</artifactId>
+	    <version>4.5.0</version>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/com.vimalselvam/cucumber-extentsreport -->
+	<dependency>
+	    <groupId>com.vimalselvam</groupId>
+	    <artifactId>cucumber-extentsreport</artifactId>
+	    <version>3.1.1</version>
+	</dependency>
+
+
+---------------------------------------------------------------------------------------------------
+2019-04-02:
+
+Ch. 20. Maven Commands You Must Know!
+
+Eclipse:
+- File | Import
+	--> Maven
+		--> Existing Maven Projects
+			--> Select the correct POM.xml in the Eclipse Framework directory.
+--> The correct project will be loaded into the IDE.
+
+After import of the project:
+- Project | Clean
+- Click the project:
+	- Right-click: Maven | Update project
+		- Select the project if not already done.
+		- Click 'Force Updatte of Snapshots / Releases'
+		- Click 'Ok'
+
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.22.1:test (default-test) on project CucumberFramework: There are test failures.
+[ERROR] 
+[ERROR] Please refer to /Users/rkremers/Documents/My files/Documenten/Studie/Cucumber/CucumberFramework/CucumberFramework/target/surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] There was an error in the forked process
+[ERROR] Suite file /Users/rkremers/Documents/My files/Documenten/Studie/Cucumber/CucumberFramework/CucumberFramework/testng.xml is not a valid file
+[ERROR] org.apache.maven.surefire.booter.SurefireBooterForkException: There was an error in the forked process
+[ERROR] Suite file /Users/rkremers/Documents/My files/Documenten/Studie/Cucumber/CucumberFramework/CucumberFramework/testng.xml is not a valid file
+
+--> Added a testng.xml file.
+
+# Created at 2019-04-02T23:24:02.636
+org.testng.TestNGException: org.xml.sax.SAXParseException; lineNumber: 1; columnNumber: 39; Premature end of file.
+
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.22.1:test (default-test) on project CucumberFramework: There are test failures.
+[ERROR] 
+[ERROR] Please refer to /Users/rkremers/Documents/My files/Documenten/Studie/Cucumber/CucumberFramework/CucumberFramework/target/surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] There was an error in the forked process
+[ERROR] org.xml.sax.SAXParseException; lineNumber: 1; columnNumber: 39; Premature end of file.
+[ERROR] org.apache.maven.surefire.booter.SurefireBooterForkException: There was an error in the forked process
+[ERROR] org.xml.sax.SAXParseException; lineNumber: 1; columnNumber: 39; Premature end of file.
+
+Fixed by adding content to 
+Further documentation:
+- https://www.journaldev.com/21326/testng-maven-surefire-plugin-configurations
+- https://www.journaldev.com/21304/testng-xml
+	--> The base content has been added as described here. No class has as yet been filled in.
+		Use this for future tests.
+
+
+---------------------------------------------------------------------------------------------------
+2019-04-03:
+
+Ch. 21. Cucumber Basics Intoduction.
+Ch. 22. What is Gherkin? What exactly is a Feature File? How are they connected?
+
+Source:
+- https://docs.cucumber.io/gherkin/reference/ 
+
+
+- Gherkin is the language that Cucumber understands.
+	It is a Business Readable, Domain Specific Language that lets you describe software's behaviour without detailing how that behaviour is implemented.
+	- Gherkin Keywords:
+		- Feature
+		- Scenario
+		- Given
+		- When
+		- Then
+		- And
+		- Then
+		- But
+		* See: https://docs.cucumber.io/gherkin/reference/ 
+			For a more complete overview.
+
+- Example:
+	Feature: Cash Withdrawal
+		- Feature File:
+			# -- FILE: features/gherkin.cash_withdrawal.feature
+			Feature:  Cash Withdrawal
+			Scenario: Attempt to withdraw cash with the incorrect pin
+			Given:    I have 50,- euro in my account
+			But:      I enter the incorrect pin code
+			Then:     I should not be able to withdraw any money
+			And:      The card should be returned.
+
+- Setup:
+	- Feature Files
+	- Step Definition  to connect the feature files with the Java code.
+	- The Java code will also use Selenium WebDriver.
+	- End result:
+		- A test against the browser.
+
+
+---------------------------------------------------------------------------------------------------
+2019-04-03:
+
+Ch. 23. Webdriveruniversity.com - Online Training platform.
+Ch. 24. Creating Our First Feature File.
+
+Source:
+- https://docs.cucumber.io/gherkin/reference/
+
+www.webDriverUniversity.com
+
+Create:
+- /CucumberFramework/src/test/java/featureFiles/Login.feature
+	- Content:
+
+# Testing the login of https://stackoverflow.com.
+Feature: Log into account
+	Existing user should be able to login to account using correct credentials
+	
+Scenario: Login into account with correct credentials
+Given User navigates to stackoverflow website
+And User clicks on the login button
+And User enters a valid username
+And User enters a valid password
+And User clicks on the login button
+Then User should be taken to the successful login page
+
+- Notes: 
+	- Login.feature is recognized as a Gherking / Cucumber feature file (Green icon)
+	- The Gherkin keywords used in the file are recognized in the file.
+- Right-click the file Login.feature
+	- Run as: Run configurations
+		- Name: Login
+		- Project: CucumberFramework
+		- Feature Path:
+			.../Login.feature (absolute path)
+		- Click 'Run'
+			- The necessary code will be implemented for us.
+				- See the console.
+					- The code can be copied and inserted into a Java Class.
+
+Check the maven setup as follows:
+
+https://maven.apache.org/plugins/maven-dependency-plugin/examples/resolving-conflicts-using-the-dependency-tree.html
+	- mvn dependency:tree -Dverbose -Dincludes=commons-collections
+	--> Shows the correct setup of the maven configured files (or not).
+
+		<!-- https://mvnrepository.com/artifact/io.cucumber/gherkin -->
+		<!-- 
+		Adding this dependency results in:
+		Exception in thread "main" java.lang.NoClassDefFoundError: gherkin/IGherkinDialectProvider
+		So leave it out (unless it works for you).
+		 -->
+		<dependency>
+		    <groupId>io.cucumber</groupId>
+		    <artifactId>gherkin</artifactId>
+		    <version>6.0.17</version>
+		</dependency>
+
+
+--------------------------------------------------------------------------------------------------
+2019-04-04:
+
+Ch. 25. Regex Commands & Useful links.
+
+- Source:
+	- https://docs.oracle.com/javase/tutorial/essential/regex/
+	
+Use:
+- https://regexr.com/
+	- Site for experimenting with regex.
+- https://jrebel.com/rebellabs/java-regular-expressions-cheat-sheet/
+- https://docs.oracle.com/javase/tutorial/essential/regex/
+- https://docs.oracle.com/javase/8/docs/api/index.html?java/util/regex/package-summary.html
+
+	([A-Z])\w+
+
+
+-------------------------------------------------------------------------------------------------
+2019-04-08:
+
+Section 18. Step File Creation.
+
+Ch. 26. What are Step Definition Files?
+
+Feature file
+--> When running generates Step Definitions
+	--> Copy into Java Classes: Selenium Java Automation Code
+		--> System Under.
+
+
+Ch. 27. Creating Our First Step Definition File.
+
+For detailed comments see the  project CucumberFramework.
+* Login.feature <==> LoginSteps.java
+- After implementation of a Java class LoginSteps, using the code initially generated by running Login.feature as configuration
+- And adding code to the methods
+- Running again results in the test methods being executed.
+
+Result:
+	RJWK: User navigates to stackoverflow website
+	User clicks on the login button on homepage
+	User enters a valid username
+	User enters a valid password
+	User clicks on the login button
+	User should be taken to the successful login page
+	Feature: Log into account
+		Existing user should be able to login to account using correct credentials
+
+	  Scenario: Login into account with correct credentials    # /Users/rkremers/Documents/My files/Documenten/Studie/Cucumber/CucumberFramework/CucumberFramework/src/test/java/featureFiles/Login.feature:17
+	    Given User navigates to stackoverflow website          # LoginSteps.user_navigates_to_stackoverflow_website()
+	    And User clicks on the login button on homepage        # LoginSteps.user_clicks_on_the_login_button_on_homepage()
+	    And User enters a valid username                       # LoginSteps.user_enters_a_valid_username()
+	    And User enters a valid password                       # LoginSteps.user_enters_a_valid_password()
+	    And User clicks on the login button                    # LoginSteps.user_clicks_on_the_login_button()
+	    Then User should be taken to the successful login page # LoginSteps.user_should_be_taken_to_the_successful_login_page()
+
+	1 Scenarios (1 passed)
+	6 Steps (6 passed)
+	0m0,169s
+
+So executing a Feature file means executing the corresponding Java class that contains the connected calls (@Given, etc.)
+
+-------------------------------------------------------------------------------------------------
+2019-04-08 / 10:
+
+Section 19 Runner Class Creation.
+
+Ch. 28. What is a Runner Class?
+- Purpose:
+	- Execute the feature files within one batch.
+	- Will target specified feature files.
+	- Tags can be added to target feature files for a given test phase in the project.
+		- e.g. only for pre-production.
+	- Generates reports.
+	- We can use @Tags to directly target Scenario's.
+		- Scenario: outline (Summary) of a feature file.
+
+
+Ch. 29. Creating Our First Runner Class & Generating Reports.
+
+
+Remember:
+- In case of unexplainable errors:
+	- Toolbar: Project | Clean
+	- Project: maven | Update project
+
+Trying to run public class MainRunner:
+- cucumber.runtime.CucumberException: Couldn't load plugin class: com.cucumber.listener.ExtendCucumberFormatter
+
+Remedy:
+# Sources:
+# - https://github.com/email2vimalraj/CucumberExtentReporter/issues/75
+# - http://extentreports.com/docs/versions/4/java/cucumber4.html
+# - http://extentreports.com/docs/versions/4/java/extentservice.html
+#   - Describes how to initialize the properties file.
+
+# Under your src/test/resources/, you need an extent.properties so the adapter knows which reporters you are using:
+# https://github.com/extent-framework/extentreports-cucumber2-adapter/blob/master/src/test/resources/com/aventstack/adapter/extent.properties
+#
+#Similarly, in the same extent.properties file, you can refer to any configuration you would like to load.
+#
+# In a nutshell:
+
+# Add the reference to the adapter in your runner
+# Mark extent.properties with the needed reporters
+# Specify path of configuration XMLs (if needed)
+
+
+---------------------------------------------------------------------------------------------------
+2019-04-16:
+
+Section 20: Integration Selenium WebDriver with Cucumber BDD.
+
+Ch. 30 How we can Integrate Selenium WebDriver.
+
+Selenium integration:
+- Feature Files
+	--> Step Classes	--> Selenium.
+		<-- Runner Class --> Excel, JVM
+
+So Selenium related code will be placed in the Steps Classes.
+
+Example:
+@Given("^User navigates to the mail website$")
+public void user_navigates_to_the_mail_website() throws Throwable {
+	driver.get("https://www.mail.com/int/");
+}
+
+@given("^User click on the login button$")
+public void user_click_on_the_login_button() throws Throwable {
+	driver.findElement(By.xpath(".//*[@id='login-button']")).click;
+}
+
+
+Sources:
+- wwww.WebDriverUniversity.com
+	- Can be used for experiments (if the site is up)
+
+
+Ch. 31. Must have Add-ons In order to Create Advanced Locators.
+
+A Locator is necessary in order to locate the elements on a screen, e.g. a login button.
+
+In the course for FireFox the locator Firepath is being used. Can only be used with an older version of FireFox.
+
+In the course version 53.b9 is needed.
+I'm currently using version 66.0.3 (64-bits) (latest version)
+
+Let's see what the latest possibilities are.
+- https://developer.mozilla.org/en-US/docs/Tools/Migrating_from_Firebug
+- Downloaded Firefox Developer Edition.
+	- Have to study how this functions.
+	- The Developer tools are a follow up of the Firebug tool, used in the course.
+
+
+//a[text()='Get a Firefox Account']
+
+
+Ch. 32. Selenium Integration - Stage 1-of-2.
+
+Download geckodriver
+- https://github.com/mozilla/geckodriver/releases
+
+Download chromedriver:
+- http://chromedriver.chromium.org/
+
+- Class LoginSteps.java
+	- Using hooks:
+		@Before
+			--> indicates a method that sets up the test situation.
+	- Use a property org.openqa.selenium.WebDriver driver.
+
+
+In Firefox Developer Edition:
+- How to find Xpath (showing the call of the page element, e.g. a login button):
+	- Developer Tools | Inspector
+	- Click on the 'Log in' button.
+	- In the Inspector will now be visible:
+		<a href="https://stackoverflow.com/users/login?ssrc=head&amp;returnurl=https%3a%2f%2fstackoverflow.com%2f" class="login-link s-btn btn-topbar-clear py8" rel="nofollow">Log In</a>
+		- Right-click: Copy --> choose xpath.
+			- Result: /html/body/header/div/ol/li[6]/a[1]
+
+- It is possible that this specific xpath will change in the future.
+	So dynamic locators will need to be created.
+	/html/body/header/div/ol/li[6]/a[1] ==> "//a[contains(text(), 'Log In')]"
+		- '//a' means: Look everywhere in the page where the tag 'Log In' is present.
+			- Hopefully this will not be present anywhere else.
+
+- Login Username:
+	- Click on 'Email' field.
+	- Right-click: Inspect Element --> shows the element in the Inspector.
+		- Inner html: <input class="s-input" id="email" type="email" size="30" maxlength="100" name="email">
+		- xpath     : //*[@id="email"]
+- Login Password:
+	- xpath: //*[@id="]'password']
+
+At first I had an error:
+- Could not login to stackoverflow.
+	- Therefore the 'Ask Question' button could not be found!
+	- So the error did not occur during the click submit event.
+	- Reason:
+		- https://stackoverflow.com/questions/17530104/selenium-webdriver-submit-vs-click
+			 the difference is one will fire the click event on the input element of type submit and the other will fire the submit event on the form element. 
+			 If you have code that only fires on the click event of the input then this will not occur when you use the submit function.
+			 - In the course the click() action was effective, but in three years time the login action under click() has moved to submit() action (which is correct).
+	- Also:
+		- https://docs.seleniumhq.org/docs/03_webdriver.jsp#user-input-filling-in-forms
+
+
+---------------------------------------------------------------------------------------------------
+2019-04-24:
+
+Section 21: A Useful Batch File to have.
+
+Ch. 34. Use Batch Files To Your Advantage.
+
+Here is shown the possibility to run the drivers from the command line and add that to a batch file.
+e.g.  using the windows command 'taskkill' can be used to kill all chromedriver sessions.
+$ taskkill /F /IM chromedriver.exe /T
+
+In unix we would use kill -9.
+
+Options of geckodriver and chromedriver:
+
+$ ls -l
+total 40824
+-rwxr-xr-x@ 1 rkremers  rkremers  14803552 18 apr 09:10 chromedriver
+-rwxr-xr-x  1 rkremers  rkremers   6091316 18 apr 08:59 geckodriver
+rkremers@BKWI-C02V30HBHV2G:resources$ ./chromedriver --help
+Usage: ./chromedriver [OPTIONS]
+
+Options
+  --port=PORT                     port to listen on
+  --adb-port=PORT                 adb server port
+  --log-path=FILE                 write server log to file instead of stderr, increases log level to INFO
+  --log-level=LEVEL               set log level: ALL, DEBUG, INFO, WARNING, SEVERE, OFF
+  --verbose                       log verbosely (equivalent to --log-level=ALL)
+  --silent                        log nothing (equivalent to --log-level=OFF)
+  --append-log                    append log file instead of rewriting
+  --replayable                    (experimental) log verbosely and don't truncate long strings so that the log can be replayed.
+  --version                       print the version number and exit
+  --url-base                      base URL path prefix for commands, e.g. wd/url
+  --whitelisted-ips               comma-separated whitelist of remote IP addresses which are allowed to connect to ChromeDriver
+  --minimum-chrome-version        minimum supported Chrome version
+rkremers@BKWI-C02V30HBHV2G:resources$ ./geckodriver --help
+geckodriver 0.24.0 
+WebDriver implementation for Firefox.
+
+USAGE:
+    geckodriver [FLAGS] [OPTIONS]
+
+FLAGS:
+        --connect-existing    Connect to an existing Firefox instance
+    -h, --help                Prints help information
+        --jsdebugger          Attach browser toolbox debugger for Firefox
+    -v                        Log level verbosity (-v for debug and -vv for trace level)
+    -V, --version             Prints version and copying information
+
+OPTIONS:
+    -b, --binary <BINARY>           Path to the Firefox binary
+        --log <LEVEL>               Set Gecko log level [possible values: fatal, error, warn, info, config, debug, trace]
+        --marionette-host <HOST>    Host to use to connect to Gecko (default: 127.0.0.1)
+        --marionette-port <PORT>    Port to use to connect to Gecko (default: system-allocated port)
+        --host <HOST>               Host ip to use for WebDriver server (default: 127.0.0.1)
+    -p, --port <PORT>               Port to use for WebDriver server (default: 4444)
+
+
+---------------------------------------------------------------------------------------------------
+2019-04-27:
+
+
+Ch. 35. Wrapping up this Module.
+
+We should now have:
+- Knowledge of the Gherkin Language and know how to use it in feature files.
+- Creation of Step Definitions, copied into java Classes.
+- In the java classes / methods we can implement Selenium in each individual step.
+- Cucumber / Selenium is installed in a java project via Maven.
+- We can use Runner classes to target multiple feature files at once.
+	- Here we can carry out different tasks, e.g. creating feature reports.
+
+
+---------------------------------------------------------------------------------------------------
+2019-04-27:
+
+Ch. 36. Cucumber Basics - [Module Resources]
+
+- https://www.dropbox.com/s/75bc21i71rzgaif/27.%20cucumber_basics_project_code.zip?dl=1
+	- This contains the project as has been developed until now.
+		- Note that I have upgraded the pom.xml and the code where necessary.
+
+
+Quiz 1: Cucumber Basics Module [Exercise]
+- Which file enables the automation test engineer to capture requirements?
+	- Feature file.
+- Which group contains the correct Cucumber Gherkin syntax?
+	- @Given, @When, @And, @Then
+- Why is BDD so popular?
+	- BDD is built in a way which enables stakeholders to easily understand the documented requirements.
+- What does BDD stand for?
+	- Behaviour Driven Development.
+- Which of the following commands (Gherkin Syntax) will work within a feature file?
+	- @Given @When @And @And @And @Then
+- What is the purpose of a steps class?
+	- To connect feature files with implementation code (Java & Selenium)
+- Can a steps class contain java code?
+	- Yes
+- Can a steps class contain selenium code?
+	- Yes
+- What are the benefits of creating a runner class?
+	- Ability to generate reports.
+	- Ability to target and execute multiple test cases.
+	- Ability to generate method templates for our step classes.
+
+
+---------------------------------------------------------------------------------------------------
+2019-04-27:
+
+Section 23. Cucumber Advanced [Module]
+
+Ch. 37. Cucumber Advanced Module Introduction.
+
+Delving deep into Cucumber:
+- Cucumber Framewwork
+	- Business Focussed:
+		- Features
+		- Scenarios: 
+		- Steps
+	- Technology focussed:
+		- Create Step definitions
+		- Create Supporting code
+		- Add relevant libraries (via maven)
+	- Supporting website:
+		- http://www.webdriveruniversity.com/
+
+Ch. 38. Cucumber Advanced Module Introduction - Resources: PDF.
+
+- https://www.dropbox.com/s/7099jl70ufyk8wb/28.1.%20intro_pdf_cucumber_advanced_module.pdf?dl=1
+
+
+---------------------------------------------------------------------------------------------------
+2019-04-28:
+
+
+Section 24. Inspecting Advanced Gherkin Keywords.
+
+Ch. 39. Gherkin Advanced Keywords.
+
+- Sources:
+	- https://cucumber.io/docs/gherkin/reference/
+
+- Overview of keywords:
+	- Feature 	: Description of the feature file (Does not affect the behaviour of the Cucumber tests)
+	- Background: Defines common steps across multiple scenarios.
+	- Scenario 	: A feature file can have multiple scenarios; each test is described by the 'scenario' keyword.
+	- Given 	: Precondition of a scenario.
+	- When 		: Description of an event, or an action.
+	- Then 		: Specific  outcome from executing the last step.
+	- And 		: Provides an additional condition to the step.
+	- But 		: Negative condition from the last executed step.
+					* To some it can be easier to read.
+					* Can be abused instead of Given, When, Then,...
+	- Scenario Outline: Enablse data to be sent to scenarios using templates and examples.
+					* Stops code duplication.
+	- Exmples 	: Used alongside Scenario Outlines, used to provide real life examples for a specific scenario outline.
+
+
+---------------------------------------------------------------------------------------------------
+2019-04-28:
+
+
+Section 25. Simulating Multiple Test Scenarios.
+
+Project: /WebDriverUniversityFramework
+
+Ch. 41. Adding Multiple Scenarios - Introduction.
+
+- http://www.webdriveruniversity.com will be used.
+
+- Create a new Framework:
+	- WebdriverUniversityFramework in Eclipse.
+
+
+Section 26. Creating Multiple Feature Files
+
+Ch. 43. Creating Multiple Feature Files.
+
+
+Section 27. Background Keyword (Avoid Code Duplication)
+
+Ch. 45 Background Keyword - Avoid Code Duplication.
+
+
+Section 28. Parameterization (Data Driven Testing)
+
+Ch. 47 Parameterization - Introduction.
+
+Example:
+- WebdriverUniversity 3 (downloadable from course ch. 50)
+
+Feature: Login to account at webdriverunivsity.com using login portal 
+
+Background: 
+	Given I access webdriverunivsity.com
+	When I click on the login portal button
+	And I enter a username
+
+Scenario: Login account with a valid password
+	And I enter a "webdriver123" password
+	When I click on the login button
+	Then I should be presented with a succesfful validation alert
+
+Scenario: Login account with a invalid password
+	And I enter a "invalid" password
+	When I click on the login button
+	Then I should be presented with a unsuccesfful validation alert  
+
+
+Any value that is unique or different between one or more scenarios can be highlighted by using double quotes.
+Once we highlight in double quotes the feature file is executed.
+Cucumber will then recommend a certain syntax that we can use and implement within our steps file.
+
+
+@When("I enter a {string} password")
+public void i_enter_a_password(String string) {
+    // Write code here that turns the phrase above into concrete actions
+    throw new cucumber.api.PendingException();
+}
+
+
+When the feature file is executed the highlighted words will be used as input parameters for the method(s).
+
+	@When("^I enter a \"([^\"]*)\" password$")
+	public void i_enter_a_password(String password) throws Throwable {
+		driver.findElement(By.id("password")).sendKeys(password); 
+	}
+
+See:
+- WebDriverUniversityFramework
+	- LoginSteps.feature
+		- LoginSteps.java
+
+
+Error:
+
+
+
+org.openqa.selenium.ElementNotInteractableException: Element <a id="login-portal" href="Login-Portal/index.html"> 
+could not be scrolled into view
+
+Build info: version: '3.141.59', revision: 'e82be7d358', time: '2018-11-14T08:17:03'
+System info: host: 'BKWI-C02V30HBHV2G', ip: 'fe80:0:0:0:1090:c580:21a2:9faf%en0', os.name: 'Mac OS X', os.arch: 'x86_64', os.version: '10.12.6', java.version: '1.8.0_172'
+Driver info: org.openqa.selenium.firefox.FirefoxDriver
+Capabilities {acceptInsecureCerts: true, browserName: firefox, browserVersion: 66.0.3, javascriptEnabled: true, moz:accessibilityChecks: false, moz:geckodriverVersion: 0.24.0, moz:headless: false, moz:processID: 17609, moz:profile: /var/folders/rh/swhs28hm8yj..., moz:shutdownTimeout: 60000, moz:useNonSpecCompliantPointerOrigin: false, moz:webdriverClick: true, pageLoadStrategy: normal, platform: MAC, platformName: MAC, platformVersion: 16.7.0, rotatable: false, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify}
+Session ID: ea735162-733f-274a-9438-6372b3ff9bff
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.createException(W3CHttpResponseCodec.java:187)
+	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:122)
+	at org.openqa.selenium.remote.http.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:49)
+	at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:158)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:83)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:552)
+	at org.openqa.selenium.remote.RemoteWebElement.execute(RemoteWebElement.java:285)
+	at org.openqa.selenium.remote.RemoteWebElement.click(RemoteWebElement.java:84)
+	at WebDriverUniversityFramework.steps.LoginSteps.i_click_on_the_login_portal_button(LoginSteps.java:51)
+	at ✽.I click on the login portal button(file:/Users/rkremers/Documents/My%20files/Documenten/Studie/Cucumber/CucumberFramework/WebDriverUniversityFramework/src/test/java/WebDriverUniversityFramework/features/LoginSteps.feature:5)
+
+
+- Mukesh otwani: How to scroll into view in Selenium Webdriver
+	- https://www.youtube.com/watch?v=l4U76CIntPw
+- http://learn-automation.com/how-to-scroll-into-view-in-selenium-webdriver/
+
+After this crash the geckodriver is not stopped. So you have to kill the processes or at some point the system will be clogged.
+
+
+I access webdriveruniversity
+I scroll to the login portal button
+The text of the element: LOGIN PORTAL
+Login Portal
+Are you really an actually user of webdriveruniversity.com? Do you really have a valid username and password? Cucumber enables us to validate multiple sets of username(s) and password(s) with ease by using scenarios outlines and examples! Give the challenge a try!
+login-portal has been scrolled into view (hopefully).
+I click on the login portal button
+
+!! Is the focuss too wide?
+For 'SUBMIT PORTAL':
+- xpath: /html/body/div[1]/div/div[2]/div[3]/a/div/div[1]/h1
+- Or try:
+	By.xpath("//a[contains(text(), \"LOGIN PORTAL\")]")
+Should I use .submit()?
+
+- The setup I am using now works in itself.
+	But the 
+
+org.openqa.selenium.ElementClickInterceptedException: Element <h1> is not clickable at point (712,33) because another element <div class="container"> obscures it
+Build info: version: '3.141.59', revision: 'e82be7d358', time: '2018-11-14T08:17:03'
+
+org.openqa.selenium.ElementClickInterceptedException: Element is not clickable at point because another element obscures it
+
+
+
+---------------------------------------------------------------------------------------------------
+2019-05-06:
+
+
+Section 29. Data Tables (Structuring Our Test Data)
+
+Ch. 52. Data Tables - Introduction.
+Ch. 53. Data Tables - Code Example & Explanation
+
+Implementation in /WebDriverUniversityFramework
+- ContactUs.feature, etc.
+
+
+Scenario: Submit valid data via contact us form
+Given I access webdriveruniversity
+When  I click on the contact us button
+And   I enter a valid first name
+And   I enter a valid last name
+And   I enter a valid email address
+And   I enter comments
+| example comment one | example comment two |
+When  I click on the submit button
+Then  the information should successfully be submitted via the contact us form
+
+Java code:
+
+@And("^I enter comments$")
+public void i_enter_comments(DataTable comments) throws Throwable {
+	List<List<String>> data = comments.raw();
+	System.out.println("I enter comments " + comments.get(0).get(0));
+	System.out.println("I enter comments " + comments.get(0).get(1));
+}
+
+Or (standard implementation when first running the features file):
+	@When("I enter comments")
+	public void i_enter_comments(io.cucumber.datatable.DataTable dataTable) {
+	    // Write code here that turns the phrase above into concrete actions
+	    // For automatic transformation, change DataTable to one of
+	    // E, List<E>, List<List<E>>, List<Map<K,V>>, Map<K,V> or
+	    // Map<K, List<V>>. E,K,V must be a String, Integer, Float,
+	    // Double, Byte, Short, Long, BigInteger or BigDecimal.
+	    //
+	    // For other transformations you can register a DataTableType.
+		System.out.println("I enter comments");
+		List<String> data = dataTable.asList();
+		for (String element: data) {
+			System.out.println("element = " + element);
+			driver.findElement(By.name("message")).sendKeys(element + "\n");
+		}		
+	}
+
+
+Ch. 54. Data Tables - Step by Step Practical Explanation
+
+- Enhancement of the example by adding data tables running the test for multiple users.
+
+
+---------------------------------------------------------------------------------------------------
+2019-05-09:
+
+
+Section 30. Scenario Outlines (Effective Way to Simulate Multiple Test Scenarios)
+
+Ch. 57. Scenario Outlines - Introduction
+Ch. 58. Scenario Outlines - Code Example & Explanation
+
+Keyword: 'Scenario Outline'
+
+Source: 
+- https://cucumber.io/docs/gherkin/reference/#scenario-outline
+
+Scenario outlines allow us to more concisely express these scenarios through the use of a template with < >-delimited parameters
+
+Feature: Login to account at webdriverunivsity.com using login portal 
+
+Background: 
+	Given I access webdriverunivsity.com
+	When  I scroll to the login portal button
+	And   I click on the login portal button
+	And   I enter a username
+
+Scenario: Login account with a valid password
+	And  I enter a "webdriver123" password
+	When I click on the login button
+	Then I should be presented with a succesfful validation alert
+
+Scenario: Login account with a invalid password
+	And I enter a "invalid" password
+	When I click on the login button
+	Then I should be presented with a unsuccesfful validation alert  
+
+
+Using datatables in Scenario Outlines:
+
+Scenario Outline: Login to account with credentials
+Given user navigates to "<url>"
+When  user clicks on the login portal button
+And   user enters the "<username>" username
+And   user enters the "<password>" password
+When  user clicks on the login button
+Then  the user should be presented with the following prompt alert "<message>"
+
+Examples:
+|  url                              | username  | password     | message              |
+|http://www.webdriveruniversity.com | user1     | pass1        | validation failed    |
+|http://www.webdriveruniversity.com | webdriver | webdriver123 | validation succeeded |
+
+--> Result: the feature file is more concise.
+
+
+java.lang.IllegalArgumentException: Not a file or directory: /Users/rkremers/Documents/My files/Documenten/Studie/Cucumber/CucumberFramework/WebDriverUniversityFramework/src/test/java/WebDriverUniversityFramework/featureFiles
+	at cucumber.runtime.io.FileResourceIterator$FileIterator.<init>(FileResourceIterator.java:63)
+	at cucumber.runtime.io.FileResourceIterator.<init>(FileResourceIterator.java:28)
+	at cucumber.runtime.io.FileResourceIterator.createFileResourceIterator(FileResourceIterator.java:14)
+	at cucumber.runtime.io.FileResourceIterable.iterator(FileResourceIterable.java:19)
+	at cucumber.runtime.model.FeatureLoader.loadFromFeaturePath(FeatureLoader.java:44)
+	at cucumber.runtime.model.FeatureLoader.load(FeatureLoader.java:36)
+	at cucumber.runtime.model.FeatureLoader.load(FeatureLoader.java:22)
+	at cucumber.runtime.FeaturePathFeatureSupplier.get(FeaturePathFeatureSupplier.java:23)
+	at cucumber.api.junit.Cucumber.<init>(Cucumber.java:89)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at org.junit.internal.builders.AnnotatedBuilder.buildRunner(AnnotatedBuilder.java:104)
+	at org.junit.internal.builders.AnnotatedBuilder.runnerForClass(AnnotatedBuilder.java:86)
+	at org.junit.runners.model.RunnerBuilder.safeRunnerForClass(RunnerBuilder.java:59)
+	at org.junit.internal.builders.AllDefaultPossibilitiesBuilder.runnerForClass(AllDefaultPossibilitiesBuilder.java:26)
+	at org.junit.runners.model.RunnerBuilder.safeRunnerForClass(RunnerBuilder.java:59)
+	at org.junit.internal.requests.ClassRequest.getRunner(ClassRequest.java:33)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader.createUnfilteredTest(JUnit4TestLoader.java:84)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader.createTest(JUnit4TestLoader.java:70)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader.loadTests(JUnit4TestLoader.java:43)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:444)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:678)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:192)
+
+
+
+---------------------------------------------------------------------------------------------------
+2019-05-14:
+
+
+Section 31. Hooks
+
+Ch. 65. Hooks - Introduction & Explanation
+
+
+---------------------------------------------------------------------------------------------------
+2019-05-15:
+
+Section 32. Cucumber Options
+
+Ch. 68. Opionts - Introduciton & Explanation
+
+Ch. 69. Options Code Example & Explanation
+
+Feature files can be categorized with specific tags.
+
+Example:
+
+@LoginScenarioWithOutline # !!!! Example of a tag. Placed above a Feature. A tag can be placed more than once.
+Feature: Outline Login to account at webdriverunivsity.com using login portal 
+
+Scenario Outline: Outline Login to account with credentials
+Given Outline user navigates to "<url>"
+When  Outline user clicks on the login portal button
+And   Outline user enters the "<username>" username
+And   Outline user enters the "<password>" password
+When  Outline user clicks on the login button
+Then  Outline user should be presented with the following prompt alert "<message>"
+
+Examples:
+|  url                              | username  | password     | message              |
+|http://www.webdriveruniversity.com | user1     | pass1        | validation failed    |
+|http://www.webdriveruniversity.com | webdriver | webdriver123 | validation succeeded |
+
+
+In the MainRunner class this tag is used:
+
+@RunWith(Cucumber.class)
+@CucumberOptions( features = { "src/test/java/webDriverUniversityFramework/featureFiles/" }
+, glue = {"WebDriverUniversityFramework.steps" }
+, monochrome = true // false: leads to weird characters in the console output.
+, tags = {"@LoginScenarioWithOutline"}
+, dryRun = false
+, plugin = { "pretty", "html:target/cucumber"
+		   , "json:target/cucumber.json"
+		   /* The following is out of date.
+		    * It was used in the course which used +/- 2016 era libraries, but I have updated all libraries when I started the course.
+		    * Per 2016 many libraries have been updated / moved to other repositories on Maven Repository.
+		    */
+//		   , "com.cucumber.listener.ExtendCucumberFormatter: target/report.html" 
+		   , "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter: target/report.html"
+		   })
+public class MainRunner {
+
+}
+
+Note that when looking at the logging the Contactus feature file has actually been started.
+However it's tests are not executed.
+
+
+!!!! The reporting is not executed !!!!
+Somehow:
+- html:target/cucumber
+- json:target/cucumber.json
+- target/report.html
+
+Are not generated (this was the case in the first project)
+
+
+---------------------------------------------------------------------------------------------------
+2019-05-15:
+
+Section 33 / 34 / 35. Tags
+
+Ch. 72. Tags - Introduction & Expalanation
+
+Ch. 82. Creating Multiple Runner Classes.
+
+- Let the different Runner classes point to different feature packages.
+- Use tags if necessary.
+
+
+---------------------------------------------------------------------------------------------------
+2019-05-15:
+
+Section 36. How to Use TestNG
+
+Ch. 83. TestNG - Introduction & Explanation.
+Ch. 84. TestNG - Code Example & Explanation.
+
+Purpose:
+- In case of multiple runner classes all these classes need to be started in one go.
+	- Use for this testNG.
+
+Sources:
+- https://www.journaldev.com/21304/testng-xml
+- https://www.journaldev.com/21219/testng-tutorial
+
+
+java.lang.NoSuchMethodError: org.testng.TestRunner.addListener(Ljava/lang/Object;)V
+	at org.testng.remote.support.RemoteTestNG6_9_10$1.newTestRunner(RemoteTestNG6_9_10.java:32)
+	at org.testng.remote.support.RemoteTestNG6_9_10$DelegatingTestRunnerFactory.newTestRunner(RemoteTestNG6_9_10.java:61)
+	at org.testng.SuiteRunner$ProxyTestRunnerFactory.newTestRunner(SuiteRunner.java:713)
+	at org.testng.SuiteRunner.init(SuiteRunner.java:260)
+	at org.testng.SuiteRunner.<init>(SuiteRunner.java:198)
+	at org.testng.TestNG.createSuiteRunner(TestNG.java:1295)
+	at org.testng.TestNG.createSuiteRunners(TestNG.java:1273)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1128)
+	at org.testng.TestNG.runSuites(TestNG.java:1049)
+	at org.testng.TestNG.run(TestNG.java:1017)
+	at org.testng.remote.AbstractRemoteTestNG.run(AbstractRemoteTestNG.java:132)
+	at org.testng.remote.RemoteTestNG.initAndRun(RemoteTestNG.java:236)
+	at org.testng.remote.RemoteTestNG.main(RemoteTestNG.java:81)
+
+
+The testng.xml file is correctly executed via maven:
+$ mvn clean package test
+  or
+$ mvn test
+
+This will execute surefire.
+
+pom.xml:
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${surefire.version}</version>
+					<!-- The configuration file testng.xml needs to be uncommented once there is 
+						something to configure.
+						The file points to one or more runner classes. 
+						If the file is just a basic xml file without configuration 
+						information an error will occur: org.xml.sax.SAXParseException; lineNumber: 
+						1; columnNumber: 39; Premature end of file. 
+						For a correct setup: 
+						- https://www.journaldev.com/21326/testng-maven-surefire-plugin-configurations 
+						- https://www.journaldev.com/21304/testng-xml 
+					-->
+					<configuration>
+						<suiteXmlFiles>
+							<suiteXmlFile>testng.xml</suiteXmlFile>
+						</suiteXmlFiles>
+						<testErrorIgnore>false</testErrorIgnore>
+						<testFailureIgnore>false</testFailureIgnore>
+					</configuration>
+				</plugin>
+
+testng.xml:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Cucumber Framework" guice-stage="DEVELOPMENT" parallel="classes">
+	<test thread-count="5" name="Cucumber Tests" verbose="2" junit="true">
+		<classes>
+			<!-- <class name="com.journaldev.xml.TestNGXMLTest" /> -->
+			<class name="CucumberFramework.runner.MainRunner" />
+		</classes>
+	</test>
+</suite>
+
+
+Alternatively:
+
+- https://github.com/cucumber/cucumber-jvm/issues/1139
+- https://maven.apache.org/surefire/maven-surefire-plugin/examples/inclusion-exclusion.html
+	- 
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${surefire.version}</version>
+					<!-- 
+					    The reason for using TestNG is, according to the author of the course:
+					    - ability to run multiple Runner classes.
+					    - Reporting facilities.
+					    The configuration file testng.xml needs to be uncommented once there is 
+						something to configure.
+						The file points to one or more runner classes. 
+						If the file is just a basic xml file without configuration 
+						information an error will occur: org.xml.sax.SAXParseException; lineNumber: 
+						1; columnNumber: 39; Premature end of file. 
+						For a correct setup: 
+						- https://www.journaldev.com/21326/testng-maven-surefire-plugin-configurations 
+						- https://www.journaldev.com/21304/testng-xml 
+					-->
+					<!-- 
+						Instead of using testng as done by the author it is also possible to just use
+						the surefire functionality. In this way also multiple Runner classes can be executed.
+						- https://maven.apache.org/surefire/maven-surefire-plugin/examples/inclusion-exclusion.html
+						This works fine.
+						$ mvn test <enter>
+						(Commented out the testng.xml file)
+					 -->
+					<configuration>
+						<suiteXmlFiles>
+							<!-- <suiteXmlFile>testng.xml</suiteXmlFile> -->
+						</suiteXmlFiles>
+						<testErrorIgnore>false</testErrorIgnore>
+						<testFailureIgnore>false</testFailureIgnore>
+						<includes>
+							<include>MainRunner.java</include>
+						</includes>
+					</configuration>
+				</plugin>
+
+Result:
+
+[INFO] --- maven-surefire-plugin:2.22.1:test (default-test) @ WebDriverUniversityFramework ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running WebDriverUniversityFramework.runner.MainRunner
+....
+The tests will be executed (successfully).
+
+
+---------------------------------------------------------------------------------------------------
+2019-05-22:
+
+- Mukesh otwani: How to generate reports in Cucumber
+	- https://www.youtube.com/watch?v=hbvO-53aFC4
+
+Reporting:
+
+@RunWith(Cucumber.class)
+@CucumberOptions( features = { "src/test/java/CucumberFramework/featureFiles/" }
+, glue = {"CucumberFramework.steps" }
+, monochrome = true // false: leads to weird characters in the console output.
+, tags = {}
+, plugin = { "pretty"
+		   , "html:target/cucumber-html-report"
+		   , "json:target/cucumber.json"
+		   , "pretty:target/cucumber-pretty.txt"
+		   , "usage:target/cucumber-usage.json"
+		   , "junit:target/cucumber-results.xml"
+		   /* The following is out of date.
+		    * It was used in the course which used +/- 2016 era libraries, but I have updated all libraries when I started the course.
+		    * Per 2016 many libraries have been updated / moved to other repositories on Maven Repository.
+		    */
+//		   , "com.cucumber.listener.ExtendCucumberFormatter: target/report.html" 
+		   , "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"
+		   })
+public class MainRunner extends AbstractTestNGCucumberTests {
+
+}
+
+For using the extend reports example:
+
+https://github.com/foursyth/extentreports-cucumberN-example
+
+src/test/resources/extent.properties:
+
+extent.reporter.avent.start=false
+extent.reporter.bdd.start=false
+extent.reporter.cards.start=false
+extent.reporter.email.start=false
+extent.reporter.html.start=true    #!!!!
+extent.reporter.klov.start=false
+extent.reporter.logger.start=false
+extent.reporter.tabular.start=false
+
+extent.reporter.avent.config=
+extent.reporter.bdd.config=
+extent.reporter.cards.config=
+extent.reporter.html.config=
+extent.reporter.klov.config=
+extent.reporter.logger.config=l
+extent.reporter.tabular.config=
+
+#extent.reporter.avent.config=avent-config.xml
+#extent.reporter.bdd.config=bdd-config.xml
+#extent.reporter.cards.config=cards-config.xml
+#extent.reporter.html.config=html-config.xml
+#extent.reporter.klov.config=klov.properties
+#extent.reporter.logger.config=logger-config.xml
+#extent.reporter.tabular.config=tabular-config.xml
+
+extent.reporter.avent.out=test-output/AventReport/
+extent.reporter.bdd.out=test-output/BddReport/
+extent.reporter.cards.out=test-output/CardsReport/
+extent.reporter.email.out=test-output/EmailReport/ExtentEmail.html
+extent.reporter.html.out=test-output/HtmlReport/ExtentHtml.html
+extent.reporter.logger.out=test-output/LoggerReport/
+extent.reporter.tabular.out=test-output/TabularReport/
+
+--------------------------------------------------------------------------------------------------
+2019-05-23:
+
+Wesley's workshop:
+
+Sx(BUTTON_NOTIFICATION_DEACTIVEER).scrollTo()
+--> $x = By.xpath()
+	$S
+	...
+
+Example:
+	$ws/regression-test/shared/src/main/java/nl/bkwi/regression/objects/GeneralPageObject.java
+
+	import static com.codeborne.selenide.Selenide.$;
+	import static com.codeborne.selenide.Selenide.$$;
+	import static com.codeborne.selenide.Selenide.$x;
+
+
+regression-test-share
+- model:
+	- $ws/regression-test/shared/src/site/resources/general/images/regression-test-Object-modelio-Model.jpg
+	- Also via Modellio (downloadable)
+
+
+localhost:8080/inkijk#notification-manager
+--> body role="document" data-open-rest-calls="0" data-loading-status="Ready"
+	--> This shows that the page has been loaded.
+		- checked with:
+			- waitUntilPagesLoaded()
+			- waitUntilPagesReady()
+
+
+--------------------------------------------------------------------------------------------------
+2019-05-26:
+
+Framework Development.
+
+
+Section 44. Framework Design & Construction
+
+- Create a Driver Factory
+- A configuration file: allows altering settings from one location such as browser type, etc.
+- A Constants file    : One location for directory locations, etc.
+
+
+So again:
+Using Firefox inspector:
+- I can not find //input[@name="first_name"]
+- I can find     input[name="first_name"]
+
+
+jun 02, 2019 9:15:17 PM org.openqa.selenium.remote.DesiredCapabilities firefox
+INFO: Using `new FirefoxOptions()` is preferred to `DesiredCapabilities.firefox()`
+
+Use instead:
+
+					FirefoxOptions firefoxOptions = new FirefoxOptions().setProfile(new FirefoxProfile());
+					firefoxOptions.setCapability("marionette", true);
+					driver = new FirefoxDriver(firefoxOptions);
+
+
+--------------------------------------------------------------------------------------------------
+2019-06-03:
+
+Section 50:: Attaching Images to Reports.
+
+This works:
+Do not view the resulting report via Eclipse but via a normal browser. 
+For some reason a cache in Eclipse prevents you from seeing the correct images if they exist.
+
+Section 51: Batch File Creation (Multiple Ways to Execute our Test Framework)
+
+Create a sh script for executing /WebDriverUniversityFrameworkSubPages.
+
+#!/bin/bash
+
+CURRENT_DIR= `pwd`
+
+cd dir of /WebDriverUniversityFrameworkSubPages, i.e. the directory in which the file pom.xml resides.
+
+mvn clean compile test
+
+cd ${CURRENT_DIR}
+
+
+Installation of Jenkins:
+
+- After installation of the jenkins.war file:
+	- java -jar jenkins.war
+- Select the suggested add-ons
+- After startup:
+	- Select add-on Green Balls
+	- Select:
+		- maven integration plugin
+		- maven invoker plugin
+        - maven Release Plug-in Plug-in
+        - TestNG Results Plugin
+        - Cucumber reports
+        - Cucumber Plugin
+        - Cucumber Trend Reports
+    - Click 'Install without restart'
+
+- Restart:
+	- java -jar jenkins.war
+
+- Click 'Manage Jenkins'
+	- Click 'Global Tool Configuration'
+		- JDK:
+			- Click 'Add JDK'
+				- Delete already present jdk's
+				- Point to $JAVA_HOME on the laptop.
+			- Click 'Add Maven'
+				- Delete already presen Maven versions.
+				- Point to Maven on the laptop.
+
+- Click 'New Item'
+	- Item name: Webdriver University
+		- Click 'Okay'.
+		- New possibilities will be shown.
+			- Click 'Build periodically'
+				- Add a schema like in unix crontab
+			- Build Environment:
+				- Click 'Add timestamps to the Console Output'
+				- Build:
+					- Root POM: Point to the correct pom.xml
+					- Goals   : clean compile test
+				- Post-Build Actions
+					- Publish TestNG Results
+						- TestNG XML report pattern: **/testng-results.xml
+	- Click 'Save'
+
+- Click 'Build Now'
+	- The project is being executed.
+	- Check in 'Console Output' the progress.
+- The TestNG plugin shows: Test Result Trend
+	
+- Disable the proeject: click 'Disable Project' in the right upper corner.
+
+
+https://hub.docker.com/r/jenkins/jenkins
+- docker pull jenkins/jenkins
+
+- https://github.com/jenkinsci/docker/blob/master/README.md
+
+$ docker run -p 8080:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts
+
+
+---------------------------------------------------------------------------------------------------
+2019-06-10:
+
+
+
+  <groupId>com.webDriverUniversityFramework</groupId>
+  <artifactId>WebDriverUniversityFrameworkSubPages</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>WebDriverUniversityFrameworkSubPages</name>
+  <url>http://maven.apache.org</url>
+
+  com.WebDriverUniversityFrameworkSubPagesReport
+
+
+- Check the extents website.
+- Solving Dependency Conflicts in Maven still to be done!!!
+
+
+https://dzone.com/articles/solving-dependency-conflicts-in-maven
+http://maven.apache.org/enforcer/enforcer-rules/dependencyConvergence.html
+https://stackoverflow.com/questions/4650460/maven-could-not-resolve-dependencies-artifacts-could-not-be-resolved
+
+Failed to read artifact descriptor for io.cucumber:cucumber-core:jar:4.2.6: Could not transfer artifact io.cucumber:cucumber-core:pom:4.2.6 from/to internal_repo

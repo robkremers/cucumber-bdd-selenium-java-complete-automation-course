@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Cucumber Framework" guice-stage="DEVELOPMENT" parallel="classes">
+	<test thread-count="5" name="Cucumber Tests" verbose="2" junit="true">
+		<classes>
+			<!-- <class name="com.journaldev.xml.TestNGXMLTest" /> -->
+			<class name="CucumberFramework.runner.MainRunner" />
+		</classes>
+	</test>
+</suite>

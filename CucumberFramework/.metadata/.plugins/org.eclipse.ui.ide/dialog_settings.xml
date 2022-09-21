@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+		<item value="/Users/rkremers/Documents/My files/Documenten/Studie/Cucumber/CucumberFramework/WebdriverUniversity 9"/>
+	</list>
+	<section name="CleanDialogSettings">
+		<item key="DIALOG_WIDTH" value="484"/>
+		<item key="TOGGLE_SELECTED" value="true"/>
+		<item key="DIALOG_HEIGHT" value="354"/>
+		<item key="DIALOG_X_ORIGIN" value="-638"/>
+		<item key="DIALOG_Y_ORIGIN" value="-877"/>
+	</section>
+	<section name="WORKBENCH_SETTINGS">
+		<list key="ENABLED_TRANSFERS">
+		</list>
+	</section>
+	<section name="ResourceNavigator">
+		<item key="ResourceWorkingSetFilter.STORE_WORKING_SET" value="Aggregate for window 1554148438955"/>
+		<item key="ResourceViewer.STORE_SORT_TYPE" value="1"/>
+	</section>
+	<section name="NewWizardAction">
+	</section>
+	<section name="ChooseWorkspaceDialogSettings">
+		<item key="DIALOG_X_ORIGIN" value="216"/>
+		<item key="DIALOG_Y_ORIGIN" value="212"/>
+	</section>
+	<section name="SaveAsDialogSettings">
+		<item key="DIALOG_WIDTH" value="525"/>
+		<item key="DIALOG_FONT_NAME" value="1|.SF NS Text|11.0|0|COCOA|1|.SFNSText"/>
+		<item key="DIALOG_HEIGHT" value="529"/>
+		<item key="DIALOG_X_ORIGIN" value="458"/>
+		<item key="DIALOG_Y_ORIGIN" value="22"/>
+	</section>
+</section>
